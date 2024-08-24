@@ -33,10 +33,10 @@ namespace CafeteriaHCC.Controllers
                           (orden, mesa) => new
                           {
                               OrdenId = orden.id,
-                              MesaId = mesa.id,
                               fecha = orden.fechaInicio,
-                              MesaLugares = mesa.lugares,
-                              MesaDisponible = mesa.disponible
+                              Mesa = mesa.id,
+                              Lugares = mesa.lugares,
+                              MesaDisponible = (mesa.disponible == 1) ? "SI" : "NO"
                           })
                     .ToListAsync();
 
@@ -63,8 +63,8 @@ namespace CafeteriaHCC.Controllers
                           .Select(m => new
                           {
                               MesaId = m.id,
-                              MesaLugares = m.lugares,
-                              MesaDisponible = m.disponible
+                              Lugares= m.lugares,
+                              MesaDisponible = (m.disponible==1)?"SI":"NO"
                           })
                     .ToListAsync();
 
@@ -86,14 +86,26 @@ namespace CafeteriaHCC.Controllers
 
         [HttpPost]
         [Route("crearNuevaOrden")]
-        public async Task<IActionResult> nuevaOrden(int mesaId, int catordId, DateTime fechaInicio, List<Detalles> detalle)
+        public async Task<IActionResult> nuevaOrden(int mesaId,string nombre , DateTime fechaInicio, List<Detalles> detalle)
         {
             try
             {
+                var nuevoCat = new CatEstatusOrden
+                {
+                    estatus = 1,//Empieza con estatus 1
+                    nombre = nombre
+                };
+
+                conexion.CatEstatusOrdenes.Add(nuevoCat);
+                await conexion.SaveChangesAsync();
+
+                // Obtener el ID de la nueva orden creada
+                int nuevoCatEstatusOr = nuevoCat.id;
+
                 var nuevaOrden = new Orden
                 {
                     mesaId = mesaId,
-                    catOrdId = catordId,
+                    catOrdId = nuevoCatEstatusOr,
                     fechaInicio = fechaInicio,
                     estatus = 1 //al inicio simpre sera 1
                 };
