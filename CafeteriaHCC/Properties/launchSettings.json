@@ -1,5 +1,14 @@
 {
   "profiles": {
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "httpPort": 5000,
+      "sslPort": 5001
+    },
     "CafeteriaHCC": {
       "commandName": "Project",
       "launchBrowser": true,
